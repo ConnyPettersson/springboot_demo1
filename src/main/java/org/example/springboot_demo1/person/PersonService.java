@@ -1,5 +1,7 @@
 package org.example.springboot_demo1.person;
 
+import org.example.springboot_demo1.person.dto.PersonDto;
+import org.example.springboot_demo1.person.dto.PersonWithSocialMedia;
 import org.example.springboot_demo1.person.entity.Person;
 import org.springframework.stereotype.Service;
 
@@ -22,9 +24,16 @@ public class PersonService {
 
     public int addPerson(PersonDto personDto) {
         Person person = new Person();
-        person.setName(personDto.name());
+        person.setFirstName(personDto.name().split(" ")[0]);
+        person.setLastName(personDto.name().split(" ")[1]);
         person.setProgrammer(personDto.programmer());
         person = personRepository.save(person);
         return person.getId();
+    }
+
+    public List<PersonWithSocialMedia> allPersonsWithSocialMedia() {
+        return personRepository.findAll().stream()
+                .map(PersonWithSocialMedia::fromPerson)
+                .toList();
     }
 }
