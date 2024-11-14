@@ -95,6 +95,10 @@ public class Person {
         socialMedia.setPerson(this);
     }
 
+    public void addLanguage(Language language) {
+        this.languages.add(language);
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

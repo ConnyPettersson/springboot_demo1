@@ -1,9 +1,15 @@
 package org.example.springboot_demo1.person;
 
+import org.example.springboot_demo1.language.LanguageRepository;
+import org.example.springboot_demo1.language.LanguageService;
 import org.example.springboot_demo1.person.dto.PersonDto;
 import org.example.springboot_demo1.person.dto.PersonWithSocialMedia;
+import org.example.springboot_demo1.person.entity.Language;
 import org.example.springboot_demo1.person.entity.Person;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -11,9 +17,11 @@ import java.util.List;
 public class PersonService {
 
     PersonRepository personRepository;
+    LanguageService languageService;
 
-    public PersonService(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository, LanguageService languageService) {
         this.personRepository = personRepository;
+        this.languageService = languageService;
     }
 
     public List<PersonDto> allPersons() {
@@ -35,5 +43,15 @@ public class PersonService {
         return personRepository.findAll().stream()
                 .map(PersonWithSocialMedia::fromPerson)
                 .toList();
+    }
+
+    public void addLanguages(int personId, List<String> languages) {
+        Person person = personRepository.findById(personId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Person not found"));
+        languages.stream()
+                .map(languageService::getLanguageOrCreate)
+                .forEach(person::addLanguage);
+        personRepository.save(person);
     }
 }
