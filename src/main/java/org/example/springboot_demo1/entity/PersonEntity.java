@@ -1,4 +1,4 @@
-package org.example.springboot_demo1.person.entity;
+package org.example.springboot_demo1.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -6,14 +6,13 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "person")
-public class Person {
+@Table(name = "person", schema = "mydatabase")
+public class PersonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -37,10 +36,10 @@ public class Person {
     @JoinTable(name = "person_language",
             joinColumns = @JoinColumn(name = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "language_id"))
-    private Set<Language> languages = new LinkedHashSet<>();
+    private Set<LanguageEntity> languages = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "person")
-    private Set<org.example.springboot_demo1.person.entity.SocialMedia> socialMedia = new LinkedHashSet<>();
+    private Set<SocialMediaEntity> socialMedias = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -74,28 +73,29 @@ public class Person {
         this.programmer = programmer;
     }
 
-    public Set<Language> getLanguages() {
+    public Set<LanguageEntity> getLanguages() {
         return languages;
     }
 
-    public void setLanguages(Set<Language> languages) {
+    public void setLanguages(Set<LanguageEntity> languages) {
         this.languages = languages;
     }
 
-    public Set<org.example.springboot_demo1.person.entity.SocialMedia> getSocialMedia() {
-        return socialMedia;
+    public Set<SocialMediaEntity> getSocialMedias() {
+        return socialMedias;
     }
 
-    public void setSocialMedia(Set<org.example.springboot_demo1.person.entity.SocialMedia> socialMedia) {
-        this.socialMedia = socialMedia;
+    public void setSocialMedias(Set<SocialMediaEntity> socialMedia) {
+        this.socialMedias = socialMedia;
     }
 
-    public void addSocialMedia(SocialMedia socialMedia) {
-        this.socialMedia.add(socialMedia);
+
+    public void addSocialMedia(SocialMediaEntity socialMedia) {
+        this.socialMedias.add(socialMedia);
         socialMedia.setPerson(this);
     }
 
-    public void addLanguage(Language language) {
+    public void addLanguage(LanguageEntity language) {
         this.languages.add(language);
     }
 
@@ -106,7 +106,7 @@ public class Person {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Person person = (Person) o;
+        PersonEntity person = (PersonEntity) o;
         return getId() != null && Objects.equals(getId(), person.getId());
     }
 

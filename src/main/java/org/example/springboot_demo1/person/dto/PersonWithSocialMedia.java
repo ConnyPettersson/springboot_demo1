@@ -1,12 +1,14 @@
 package org.example.springboot_demo1.person.dto;
 
-import org.example.springboot_demo1.person.entity.Person;
+import org.example.springboot_demo1.entity.PersonEntity;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-public record PersonWithSocialMedia(String name, List<SocialMediaDto> socialMedias) {
-    public static PersonWithSocialMedia fromPerson(Person person) {
+public record PersonWithSocialMedia(String name, Set<SocialMediaDto> socialMedias) {
+    public static PersonWithSocialMedia fromPerson(PersonEntity person) {
         return new PersonWithSocialMedia(person.getFullName(),
-                   person.getSocialMedia().stream().map(SocialMediaDto::from).toList());
+                person.getSocialMedias().stream().map(SocialMediaDto::from)
+                        .collect(Collectors.toSet()));
     }
 }

@@ -1,31 +1,36 @@
 package org.example.springboot_demo1.person;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.springboot_demo1.apiauth.ApiKeyAuthService;
+import org.example.springboot_demo1.entity.ApiKey;
 import org.example.springboot_demo1.person.dto.LanguagesDto;
 import org.example.springboot_demo1.person.dto.PersonDto;
-import org.example.springboot_demo1.person.dto.PersonWithSocialMedia;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.example.springboot_demo1.person.projection.PersonWithSocialMediaProjection;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 
 @RestController
-
+@Slf4j
 public class PersonController {
 
+    private final ApiKeyAuthService apiKeyAuthService;
+    //private static final Logger log = LoggerFactory.getLogger(PersonController.class);
     PersonService personService;
-    Logger log = LoggerFactory.getLogger(PersonController.class);
 
-    public PersonController(PersonService personService) {
+    public PersonController(PersonService personService, ApiKeyAuthService apiKeyAuthService) {
         this.personService = personService;
+        this.apiKeyAuthService = apiKeyAuthService;
     }
 
     @GetMapping("/persons")
-    public List<PersonWithSocialMedia> getAllPersons(){
-    return personService.allPersonsWithSocialMedia();
+    public List<PersonWithSocialMediaProjection> getAllPersons() {
+        //return  personService.allPersonsWithSocialMedia();
+        return  personService.allPersonsWithSocialMediaProjection();
     }
 
     @PostMapping("/persons")
@@ -37,8 +42,22 @@ public class PersonController {
     @PostMapping("/persons/{id}/languages")
     public void addLanguages(@PathVariable int id,
                              @RequestBody LanguagesDto languagesDto) {
-
-        log.info("Add languages for id {}, {}", id, languagesDto);
+        log.info("Add languages for id {}, {}", id, languagesDto.languages());
         personService.addLanguages(id, languagesDto.languages());
     }
+
+    @GetMapping("/api/test")
+    @PreAuthorize("hasAuthority('read:test')")
+    public Collection<ApiKey> test() {
+        return apiKeyAuthService.getMyApiKeys();
+    }
 }
+
+
+//RBAC - Role based access control
+//ACL - Access Control List  ( file system )
+//ABAC - Attribute based access control,
+// Ask if we can do something based on
+// Who are we? What do we want to do?
+// What's the time? Which computer are we using?
+// and everything else ...

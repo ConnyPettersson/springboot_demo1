@@ -1,4 +1,4 @@
-package org.example.springboot_demo1.person.entity;
+package org.example.springboot_demo1.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -11,14 +11,14 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "social_media")
-public class SocialMedia {
+public class SocialMediaEntity {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
-    private Person person;
+    private PersonEntity person;
 
     @Size(max = 255)
     @NotNull
@@ -39,11 +39,11 @@ public class SocialMedia {
         this.id = id;
     }
 
-    public Person getPerson() {
+    public PersonEntity getPerson() {
         return person;
     }
 
-    public void setPerson(Person person) {
+    public void setPerson(PersonEntity person) {
         this.person = person;
     }
 
@@ -71,7 +71,7 @@ public class SocialMedia {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        SocialMedia that = (SocialMedia) o;
+        SocialMediaEntity that = (SocialMediaEntity) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 
