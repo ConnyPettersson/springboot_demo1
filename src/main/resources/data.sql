@@ -7,6 +7,7 @@ TRUNCATE TABLE social_media;
 TRUNCATE TABLE language;
 TRUNCATE TABLE person;
 TRUNCATE TABLE api_key;
+TRUNCATE TABLE playground;
 
 -- Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;
