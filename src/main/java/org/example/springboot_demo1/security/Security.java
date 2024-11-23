@@ -43,6 +43,7 @@ public class Security {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize ->
                         authorize
+                                .requestMatchers("/static/**", "/js/**", "/index.html").permitAll()
                                 .requestMatchers(GET, "/persons").permitAll()
                                 .requestMatchers(POST, "/persons").hasRole("ADMIN")
                                 .requestMatchers(POST, "/persons/**").authenticated()
